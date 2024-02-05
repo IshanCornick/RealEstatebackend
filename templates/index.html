@@ -4,20 +4,20 @@
 {% block body %}
     <!-- Start of body content specific to page -->
     <div class="px-5 py-5 mx-auto">
-        <h1 class="text-white"><strong>Python Home Page</strong></h1>
+        <h1 class="text-white"><strong>Real Estate Backend</strong></h1>
         <div class="row">
             <div class="col-4">
                 <div class="card">
-                    <img class="card-img-top" src="{{ url_for('static', filename='assets/python.jpeg') }}" alt="Python Development" height="250">
+                    <img class="card-img-top" src="{{ url_for('static', filename='assets/backendimage.png') }}" alt="Python Development" height="250">
                     <div class="card-body">
-                    <h5 class="card-title">What should <mark>Student Developers learn</mark>?</h5>
+                    <h5 class="card-title">What's the purpose of the <mark>backend?</mark></h5>
                     <p class="card-text">
                         <ol>
-                            <li>Python 3.9 is used for most of our backend PBL. HTML, CSS, JavaScript will be used in frontend</li>
-                            <li>Visuals Studio Code (VS Code) is the primary editor, Interactive Development Environment (IDE).</li>
-                            <li>GitHub.  Managing and sharing code change, branches, pull requests, issues, and more will be through GitHub.</li>
-                            <li>DevOps. Python programmers should have a passion for managing the environment and learning automation (Git, Linux, Bash, Python Packages, Docker).</li>
-                            <li>API and Microservice using Flask.  Mastering development techniques in creating and consuming RESTful APIs</li>
+                            <li>Data management: The backend is responsible for storing, retrieving, and manipulating data in databases or other storage systems. This includes tasks such as creating, reading, updating, and deleting (CRUD) data.</li>
+                            <li>Business logic: The backend contains the business logic of the application, which defines the rules and processes that govern how data is processed and operations are performed. This logic ensures that the application functions correctly and consistently.</li>
+                            <li>Security: The backend is responsible for enforcing security measures to protect sensitive data and prevent unauthorized access. This includes authentication, authorization, data encryption, and other security mechanisms.</li>
+                            <li>DPerformance optimization: The backend often involves optimizing performance to ensure that the application runs efficiently and can handle a large number of users and requests. This may involve tasks such as caching, load balancing, and database optimization.</li>
+                            <li>Integration: The backend often integrates with external systems, services, or APIs to access additional functionality or exchange data with other applications. This enables the application to leverage external resources and provide more comprehensive features to users.</li>
                         </ol>
                     </p>
                     <a href="#" class="btn btn-primary">Go somewhere</a>
@@ -28,13 +28,18 @@
                 <div class="card">
                     <img class="card-img-top" src="{{ url_for('static', filename='assets/flask.png') }}" alt="Flask Development" height="250">
                     <div class="card-body">
-                    <h5 class="card-title">What is <mark>Flask</mark>? How do I start Web development?</h5>
+                    <h5 class="card-title">What will the <mark>info</mark> be used for?</h5>
                     <p class="card-text">
                         <ol>
-                            <li>Flask Framework is the popular Web Application development framework of Python.</li>
-                            <li>Blueprint is utility to help abstract complexity, moving information in independent files and directories.</li>
-                            <li>HTML using Bootstrap is a great way to build interesting pages and reduce CSS</li>
-                            <li>Jinja2 is a server-side Python like template engine, supports HTML5 web development, and provides full integration with Flask.</li>
+                            <li>User interactions: The backend manages user data, including user profiles, preferences, and activities. This information is used to personalize the user experience, provide tailored content, and track user interactions within the application.</li>
+                            <li>Transactional operations: For applications involving e-commerce, banking, or any other transactional activities, the backend handles transactions, payments, orders, and inventory management. This information is crucial for completing transactions securely and efficiently.</li>
+                            <li>Analytics and reporting: Data collected and processed by the backend is often used for analytics and reporting purposes. This includes generating insights, analyzing trends, and producing reports to aid decision-making and improve the application's performance.</li>
+                            <li>Content management: In content-driven applications such as blogs, news websites, or content management systems (CMS), the backend manages content creation, storage, and publishing. This includes managing articles, images, videos, and other multimedia assets.</li>
+                            <li>Authentication and authorization: The backend handles user authentication and authorization processes to ensure secure access to the application's resources. This involves verifying user identities, managing user roles and permissions, and enforcing security policies.</li>
+                            <li>Notifications and communication: Backend systems often facilitate communication between users through features such as messaging, notifications, and alerts. The backend manages the delivery of these messages and ensures timely communication between users.</li>
+                            <li>Integration with external systems: The backend integrates with external systems, APIs, or services to access additional functionality or exchange data. This includes integration with payment gateways, social media platforms, third-party APIs, and other external resources.</li>
+                            <li>Performance monitoring and optimization: The backend monitors the performance of the application, including response times, resource utilization, and error rates. This information is used to identify bottlenecks, optimize performance, and ensure the application meets its performance objectives.</li>
+
                         </ol>
                     </p>
                     <a href="#" class="btn btn-primary">Go somewhere</a>
@@ -45,13 +50,16 @@
                 <div class="card">
                     <img class="card-img-top" src="{{ url_for('static', filename='assets/pythondb.png') }}" alt="Backend and Persistence" height="250">
                     <div class="card-body">
-                    <h5 class="card-title">How do you manage <mark>Persistent data</mark> with Python?</h5>
+                    <h5 class="card-title">Why is it <mark>important</mark> to use a backend?</h5>
                     <p class="card-text">
                         <ol>
-                            <li>A Database is an example of persistent data that is held on a computer.  Programming languages and frameworks allow you to store and retrive data.</li>
-                            <li>SQL stands for Structured Query Language · SQL lets you access and manipulate databases and has become a long lasting development standard.</li>
-                            <li>SQLAlchemy is the Python SQL toolkit and Object Relational Mapper (ORM) that gives application developers the full power and flexibility of SQL.</li>
-                            <li>There are many newer and sometimes easier Database languages and frameworks.  Mongo, DynamoDB, Neo4J are Databases being used by students developers in last 3 years.</li>
+                            <li>Data Management: The backend is responsible for managing data, including storing, retrieving, and manipulating it. This allows for structured organization of data and ensures data integrity.</li>
+                            <li>Business Logic: The backend contains the business logic of the application, defining how data is processed and operations are performed. This logic ensures consistency and reliability in the application's behavior.</li>
+                            <li>Security: The backend handles security measures such as authentication, authorization, and data encryption to protect sensitive information and prevent unauthorized access.</li>
+                            <li>Scalability: A well-designed backend can accommodate a growing user base and increasing data volume by scaling resources such as servers, databases, and processing power.</li>
+                            <li>Integration: The backend facilitates integration with external systems, services, and APIs, enabling the application to leverage additional functionality and exchange data with other systems.</li>
+                            <li>Performance: By offloading computational tasks to the backend, the frontend can focus on user interaction and presentation, leading to improved performance and responsiveness of the application.</li>
+                            <li>Cross-platform Support: The backend can support multiple frontend interfaces (e.g., web, mobile, desktop) by providing a consistent data and application logic layer across different platforms.</li>                            <li>Maintenance and Updates: Separating the backend from the frontend allows for easier maintenance and updates. Changes to the user interface or frontend technologies can be made without affecting the backend logic and vice versa.</li>
                         </ol>
                     </p>
                     <a href="#" class="btn btn-primary">Go somewhere</a>
