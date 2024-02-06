@@ -14,8 +14,32 @@ api = Api(user_api)
 
 class UserAPI:        
     class _CRUD(Resource):  # User API operation for Create, Read.  THe Update, Delete methods need to be implemeented
+        # @token_required
         @token_required
-        def post(self, current_user): # Create method
+        def put(self, current_user):
+            body = request.get_json() # get the body of the request
+            uid = body.get('uid') # get the UID (Know what to reference)
+            name = body.get('name')
+            password = body.get('password')
+            # dob=body.get('dob')
+            users = User.query.all()
+            for user in users:
+                if user.uid == uid:
+                    user.update(name,'',password)
+            return f"{user.read()} Updated"
+        
+        @token_required
+        def delete(self, current_user):
+            # body = request.get_json()
+            token = request.cookies.get("jwt")
+            cur_user= data=jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid']
+            users = User.query.all()
+            for user in users:
+                if user.uid==cur_user: # modified with the and user.id==cur_user so random users can't delete other ppl
+                    user.delete()
+            return jsonify(user.read())
+
+        def post(self): # Create method
             ''' Read data for json body '''
             body = request.get_json()
             
@@ -31,10 +55,10 @@ class UserAPI:
             # look for password and dob
             password = body.get('password')
             dob = body.get('dob')
-            admin = body.get('admin')
+
             ''' #1: Key code block, setup USER OBJECT '''
             uo = User(name=name, 
-                      uid=uid, admin=admin)
+                      uid=uid)
             
             ''' Additional garbage error checking '''
             # set password if provided
@@ -46,6 +70,7 @@ class UserAPI:
                     uo.dob = datetime.strptime(dob, '%Y-%m-%d').date()
                 except:
                     return {'message': f'Date of birth format error {dob}, must be mm-dd-yyyy'}, 400
+            
             ''' #2: Key Code block to add user to database '''
             # create user in database
             user = uo.create()
@@ -61,33 +86,6 @@ class UserAPI:
             json_ready = [user.read() for user in users]  # prepare output in json
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
         
-        @token_required
-        def delete(self, current_user):
-            body = request.get_json()
-            uid = body.get('uid')
-            users = User.query.all()
-            for user in users:
-                if user.uid == uid:
-                    user.delete()
-            return jsonify(user.read())
-        
-        @token_required
-        def put(self, current_user):
-            body = request.get_json() # get the body of the request
-            uid = body.get('uid') # get the UID (Know what to reference)
-            dob = body.get('dob')
-            name = body.get('name')
-            admin = body.get('admin')
-            if dob is not None:
-                try:
-                    fdob = datetime.strptime(dob, '%Y-%m-%d').date()
-                except:
-                    return {'message': f'Date of birth format error {dob}, must be mm-dd-yyyy'}, 400
-            users = User.query.all()
-            for user in users:
-                if user.uid == uid:
-                    user.update(name,'','',fdob,admin)
-            return f"{user.read()} Updated"
     
     class _Security(Resource):
         def post(self):
@@ -112,8 +110,7 @@ class UserAPI:
                 if user:
                     try:
                         token = jwt.encode(
-                            {"_uid": user._uid,
-                            "_isAdmin": user._admin},
+                            {"_uid": user._uid},
                             current_app.config["SECRET_KEY"],
                             algorithm="HS256"
                         )
@@ -144,8 +141,10 @@ class UserAPI:
                         "error": str(e),
                         "data": None
                 }, 500
+        
 
             
     # building RESTapi endpoint
     api.add_resource(_CRUD, '/')
     api.add_resource(_Security, '/authenticate')
+    

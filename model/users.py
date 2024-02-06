@@ -71,24 +71,23 @@ class Post(db.Model):
 # -- c.) SQLAlchemy ORM is layer on top of SQLAlchemy Core, then SQLAlchemy engine, SQL
 class User(db.Model):
     __tablename__ = 'users'  # table name is plural, class name is singular
+
     # Define the User schema with "vars" from object
     id = db.Column(db.Integer, primary_key=True)
     _name = db.Column(db.String(255), unique=False, nullable=False)
     _uid = db.Column(db.String(255), unique=True, nullable=False)
     _password = db.Column(db.String(255), unique=False, nullable=False)
     _dob = db.Column(db.Date)
-    _admin = db.Column(db.String(255), unique=False, nullable=False)
     
     # Defines a relationship between User record and Notes table, one-to-many (one user to many notes)
     posts = db.relationship("Post", cascade='all, delete', backref='users', lazy=True)
 
     # constructor of a User object, initializes the instance variables within object (self)
-    def __init__(self, name, uid, password="123qwerty", dob=date.today(), admin='yes'):
+    def __init__(self, name, uid, password="123qwerty", dob=date.today()):
         self._name = name    # variables with self prefix become part of the object, 
         self._uid = uid
         self.set_password(password)
         self._dob = dob
-        self._admin = admin
 
     # a name getter method, extracts name from object
     @property
@@ -144,15 +143,6 @@ class User(db.Model):
     def age(self):
         today = date.today()
         return today.year - self._dob.year - ((today.month, today.day) < (self._dob.month, self._dob.day))
-
-    @property
-    def admin(self):
-        return self._admin
-    
-    # a setter function, allows name to be updated after initial object creation
-    @admin.setter
-    def admin(self, admin):
-        self._admin = admin
     
     # output content using str(object) in human readable form, uses getter
     # output content using json dumps, this is ready for API response
@@ -180,13 +170,12 @@ class User(db.Model):
             "uid": self.uid,
             "dob": self.dob,
             "age": self.age,
-            "posts": [post.read() for post in self.posts],
-            "admin": self.admin
+            "posts": [post.read() for post in self.posts]
         }
 
     # CRUD update: updates user name, password, phone
     # returns self
-    def update(self, name="", uid="", password="", dob='', admin=''):
+    def update(self, name="", uid="", password=""):
         """only updates values with length"""
         if len(name) > 0:
             self.name = name
@@ -194,10 +183,6 @@ class User(db.Model):
             self.uid = uid
         if len(password) > 0:
             self.set_password(password)
-        if dob:
-            self.dob = dob
-        if len(admin) > 0:
-            self.admin = admin
         db.session.commit()
         return self
 
@@ -207,6 +192,7 @@ class User(db.Model):
         db.session.delete(self)
         db.session.commit()
         return None
+    
 
 
 """Database Creation and Testing """
@@ -237,3 +223,4 @@ def initUsers():
                 '''fails with bad or duplicate data'''
                 db.session.remove()
                 print(f"Records exist, duplicate email, or error: {user.uid}")
+            
