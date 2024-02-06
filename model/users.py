@@ -78,7 +78,7 @@ class User(db.Model):
     _uid = db.Column(db.String(255), unique=True, nullable=False)
     _password = db.Column(db.String(255), unique=False, nullable=False)
     _dob = db.Column(db.Date)
-    _perms = db.column(db.boolean, unique=False, nullable= False)
+    _perms = db.column(db.boolean, unique=False, nullable= True)
 
     # Defines a relationship between User record and Notes table, one-to-many (one user to many notes)
     posts = db.relationship("Post", cascade='all, delete', backref='users', lazy=True)
