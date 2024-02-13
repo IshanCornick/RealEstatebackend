@@ -21,11 +21,12 @@ class UserAPI:
             uid = body.get('uid') # get the UID (Know what to reference)
             name = body.get('name')
             password = body.get('password')
+            score = body.get('score')
             # dob=body.get('dob')
             users = User.query.all()
             for user in users:
                 if user.uid == uid:
-                    user.update(name,'',password)
+                    user.update(name,'',password, score)
             return f"{user.read()} Updated"
         
         @token_required

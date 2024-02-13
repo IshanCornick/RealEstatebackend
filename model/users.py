@@ -185,7 +185,7 @@ class User(db.Model):
 
     # CRUD update: updates user name, password, phone
     # returns self
-    def update(self, name="", uid="", password="", score=None):
+    def update(self, name="", uid="", password="", score=0):
         """only updates values with length"""
         if len(name) > 0:
             self.name = name
@@ -193,8 +193,8 @@ class User(db.Model):
             self.uid = uid
         if len(password) > 0:
             self.set_password(password)
-        if score is not None:
-            self.score=score
+        if score>=0:
+            self.score=5
         db.session.commit()
         return self
 
