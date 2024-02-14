@@ -197,7 +197,7 @@ class User(db.Model):
         if len(password) > 0:
             self.set_password(password)
         if score>=0:
-            self.score=5
+            self.score=score
         db.session.commit()
         return self
 
