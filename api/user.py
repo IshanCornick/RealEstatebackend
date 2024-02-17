@@ -22,11 +22,13 @@ class UserAPI:
             name = body.get('name')
             password = body.get('password')
             score = body.get('score')
+            diet = body.get('diet')
+            workout = body.get('workout')
             # dob=body.get('dob')
             users = User.query.all()
             for user in users:
                 if user.uid == uid:
-                    user.update(name,'',password, score)
+                    user.update(name,'',password, score, diet, workout)
             return f"{user.read()} Updated"
         
         @token_required
@@ -87,11 +89,61 @@ class UserAPI:
             json_ready = [user.read() for user in users]  # prepare output in json
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
         
-    
+    class _DietCRUD(Resource):  # Design CRUD
+        @token_required
+        def get(self, current_user):
+            body = request.get_json() # get the body of the request
+            token = request.cookies.get("jwt")
+            cur_user = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid']
+            users = User.query.all()
+            for user in users:
+                if user.uid==cur_user: # modified with the and user.id==cur_user so random users can't delete other ppl
+                    id = user.id
+            diet = body.get("diet")
+            workout = body.get("workout")
+            return f"Cannot locate design", 400
+        @token_required
+        def put(self, current_user):
+            body = request.get_json() # get the body of the request
+            token = request.cookies.get("jwt")
+            cur_user = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid']
+            users = User.query.all()
+            diet = body.get("diet")
+            workout = body.get("workout")
+            for user in users:
+                if user.uid==cur_user: # modified with the and user.id==cur_user so random users can't delete other ppl
+                    id = user.id
+                    user.update('','','','', workout, diet)
+            diet = body.get("diet")
+            workout = body.get("workout")
+        @token_required
+        def delete(self, current_user):
+            body = request.get_json() # get the body of the request
+            token = request.cookies.get("jwt")
+            cur_user = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid']
+            users = User.query.all()
+            for user in users:
+                if user.uid==cur_user: # modified with the and user.id==cur_user so random users can't delete other ppl
+                    id = user.id
+            diet = body.get("diet")
+            workout = body.get("workout")
+        @token_required
+        def patch(self, current_user):
+            body = request.get_json() # get the body of the request
+            name = body.get('name')
+            token = request.cookies.get("jwt")
+            cur_user = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid']
+            users = User.query.all()
+            for user in users:
+                if user.uid==cur_user: # modified with the and user.id==cur_user so random users can't delete other ppl
+                    id = user.id
+            diet = body.get("diet")
+            workout = body.get("workout")
     class _Security(Resource):
         def post(self):
             try:
                 body = request.get_json()
+                print(body)
                 if not body:
                     return {
                         "message": "Please provide user details",
@@ -147,5 +199,6 @@ class UserAPI:
             
     # building RESTapi endpoint
     api.add_resource(_CRUD, '/')
+    api.add_resource(_DietCRUD, '/diet')
     api.add_resource(_Security, '/authenticate')
     

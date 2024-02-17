@@ -3,7 +3,8 @@ from random import randrange
 from datetime import date
 import os, base64
 import json
-
+from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy import Text
 from __init__ import app, db
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -22,6 +23,8 @@ class Post(db.Model):
     # Define a relationship in Notes Schema to userID who originates the note, many-to-one (many notes to one user)
     userID = db.Column(db.Integer, db.ForeignKey('users.id'))
     score = db.Column(db.Integer, unique=False)
+    _workout = db.Column(db.String, unique=False)
+    _diet = db.Column(db.String, unique=False)
 
     # Constructor of a Notes object, initializes of instance variables within object
     def __init__(self, id, note, image,score):
@@ -82,17 +85,37 @@ class User(db.Model):
     _password = db.Column(db.String(255), unique=False, nullable=False)
     _dob = db.Column(db.Date)
     _score = db.Column(db.Integer, default = 0, nullable = False)
-
+    _workout = db.Column(db.String, unique=False)
+    _diet = db.Column(db.String, unique=False)
+    
     # Defines a relationship between User record and Notes table, one-to-many (one user to many notes)
     posts = db.relationship("Post", cascade='all, delete', backref='users', lazy=True)
 
     # constructor of a User object, initializes the instance variables within object (self)
-    def __init__(self, name, uid, password="123qwerty", dob=date.today(), posts=False, score=0):
+    def __init__(self, name, uid, workout, diet, password="123qwerty", dob=date.today(), posts=False, score=0):
         self._name = name    # variables with self prefix become part of the object, 
         self._uid = uid
         self.set_password(password)
         self._dob = dob
         self._score=score
+        self._workout= workout
+        self._diet= diet
+        
+    @property
+    def workout(self):
+        return self._workout
+
+    @workout.setter
+    def workout(self, workout):
+        self._workout = workout
+
+    @property
+    def diet(self):
+        return self._diet
+
+    @diet.setter
+    def diet(self, diet):
+        self._diet = diet
 
     @property
     def score(self):
@@ -183,12 +206,14 @@ class User(db.Model):
             "dob": self.dob,
             "age": self.age,
             "posts": [post.read() for post in self.posts],
-            "score": self.score
+            "score": self.score,
+            "workout": self.workout,
+            "diet": self.diet 
         }
 
     # CRUD update: updates user name, password, phone
     # returns self
-    def update(self, name="", uid="", password="", score=0):
+    def update(self, name="", uid="", password="", score=0,workout="",diet=""):
         """only updates values with length"""
         if len(name) > 0:
             self.name = name
@@ -196,8 +221,12 @@ class User(db.Model):
             self.uid = uid
         if len(password) > 0:
             self.set_password(password)
-        if score>=0:
-            self.score=score
+        # if score>=0:
+        #     self.score=score
+        if len(workout)>0:
+            self.workout = workout
+        if len(diet)>0:
+            self.diet = diet
         db.session.commit()
         return self
 
@@ -219,10 +248,10 @@ def initUsers():
         """Create database and tables"""
         db.create_all()
         """Tester data for table"""
-        u1 = User(name='Thomas Edison', uid='toby', password='123toby', dob=date(1847, 2, 11), score=0)
-        u2 = User(name='Nicholas Tesla', uid='niko', password='123niko', dob=date(1856, 7, 10), score =0)
-        u3 = User(name='Alexander Graham Bell', uid='lex', score=0)
-        u4 = User(name='Grace Hopper', uid='hop', password='123hop', dob=date(1906, 12, 9),score=0)
+        u1 = User(name='Thomas Edison', uid='toby', password='123toby', dob=date(1847, 2, 11), score=0, workout="none", diet="none")
+        u2 = User(name='Nicholas Tesla', uid='niko', password='123niko', dob=date(1856, 7, 10), score =0, workout="none", diet="none")
+        u3 = User(name='Alexander Graham Bell', uid='lex', score=0, workout="none", diet="none")
+        u4 = User(name='Grace Hopper', uid='hop', password='123hop', dob=date(1906, 12, 9),score=0, workout="none", diet="none")
         users = [u1, u2, u3, u4]
 
         """Builds sample user/note(s) data"""
