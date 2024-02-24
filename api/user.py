@@ -30,7 +30,7 @@ class UserAPI:
                 if user.uid == uid:
                     user.update(name,'',password, score, diet, workout)
             return f"{user.read()} Updated"
-        
+        # jioj
         @token_required
         def delete(self, current_user):
             # body = request.get_json()
