@@ -249,9 +249,9 @@ def initUsers():
         db.create_all()
         """Tester data for table"""
         u1 = User(name='Thomas Edison', uid='toby', password='123toby', dob=date(1847, 2, 11), score=0, workout="none", diet="none")
-        u2 = User(name='Nicholas Tesla', uid='niko', password='123niko', dob=date(1856, 7, 10), score =0, workout="none", diet="none")
-        u3 = User(name='Alexander Graham Bell', uid='lex', score=0, workout="none", diet="none")
-        u4 = User(name='Grace Hopper', uid='hop', password='123hop', dob=date(1906, 12, 9),score=0, workout="none", diet="none")
+        u2 = User(name='Nicholas Tesla', uid='niko', password='123niko', dob=date(1856, 7, 10), score =12, workout="none", diet="none")
+        u3 = User(name='Alexander Graham Bell', uid='lex', score=4, workout="none", diet="none")
+        u4 = User(name='Grace Hopper', uid='hop', password='123hop', dob=date(1906, 12, 9),score=6, workout="none", diet="none")
         users = [u1, u2, u3, u4]
 
         """Builds sample user/note(s) data"""

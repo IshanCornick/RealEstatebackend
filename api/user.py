@@ -3,8 +3,9 @@ from flask import Blueprint, request, jsonify, current_app, Response
 from flask_restful import Api, Resource # used for REST API building
 from datetime import datetime
 from auth_middleware import token_required
-
+from sqlalchemy import desc
 from model.users import User
+
 
 user_api = Blueprint('user_api', __name__,
                    url_prefix='/api/users')
@@ -87,7 +88,9 @@ class UserAPI:
         def get(self, current_user): # Read Method
             users = User.query.all()    # read/extract all users from database
             json_ready = [user.read() for user in users]  # prepare output in json
-            return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
+            json_ready_sorted = sorted(json_ready, key=lambda x: x.get('score', 0), reverse=True)
+
+            return jsonify(json_ready_sorted)  # jsonify creates Flask response object, more specific to APIs than json.dumps
         
     class _DietCRUD(Resource):  # Design CRUD
         @token_required
