@@ -3,6 +3,7 @@ import threading
 # import "packages" from flask
 from flask import render_template,request  # import render_template from "public" flask libraries
 from flask.cli import AppGroup
+from auth_middleware import token_required
 
 
 # import "packages" from "this" project

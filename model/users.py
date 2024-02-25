@@ -221,12 +221,12 @@ class User(db.Model):
             self.uid = uid
         if len(password) > 0:
             self.set_password(password)
-        # if score>=0:
-        #     self.score=score
-        if len(workout)>0:
-            self.workout = workout
-        if len(diet)>0:
-            self.diet = diet
+        if score>=0:
+             self.score=score
+      #  if len(workout)>0:
+      #      self.workout = workout
+      #  if len(diet)>0:
+       #     self.diet = diet
         db.session.commit()
         return self
 
