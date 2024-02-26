@@ -215,3 +215,4 @@ class UserAPI:
     api.add_resource(_CRUD, '/')
     api.add_resource(_DietCRUD, '/diet')
     api.add_resource(_Security, '/authenticate')
+    
