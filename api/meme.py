@@ -5,6 +5,8 @@ from auth_middleware import token_required
 from model.memes import Image  # Assuming Image is the SQLAlchemy model for storing images
 from flask import Flask
 from flask_cors import CORS
+from flask import send_file
+import io
 
 app = Flask(__name__)
 CORS(app)  # Allow CORS for all routes
@@ -65,12 +67,14 @@ class ImageAPI:
             except Exception as e:
                 return {'message': str(e)}, 500
 
-        def get(self):
+        def get(self, current_user):
             try:
                 images = Image.query.all()
-                json_ready = [image.read() for image in images]
-                return jsonify(json_ready)
+                # Assuming each image has a 'image_data' attribute which stores the image data
+                image_data = images[0].image_data  # Assuming you are only returning one image for simplicity
+                return send_file(io.BytesIO(image_data), mimetype='image/png')  # Adjust mimetype as needed
             except Exception as e:
                 return {'message': str(e)}, 500
+
 
     api.add_resource(_CRUD, '/meme')
