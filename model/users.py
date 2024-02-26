@@ -237,6 +237,7 @@ class User(db.Model):
         
       
         self.grade = grade
+        self.diet = diet
        
         db.session.commit()
         return self
