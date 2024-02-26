@@ -3,6 +3,13 @@ from flask_restful import Api, Resource
 from datetime import datetime
 from auth_middleware import token_required
 from model.memes import Image  # Assuming Image is the SQLAlchemy model for storing images
+from flask import Flask
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)  # Allow CORS for all routes
+
+# Define your API routes and other application setup
 
 meme_api = Blueprint('meme_api', __name__, 
                      url_prefix='/api/memes')
@@ -11,8 +18,7 @@ api = Api(meme_api)
 
 class ImageAPI:        
     class _CRUD(Resource):
-        @token_required
-        def put(self, current_user):
+        def put(self):
             try:
                 body = request.get_json()
                 image_id = body.get('id')
@@ -30,8 +36,7 @@ class ImageAPI:
             except Exception as e:
                 return {'message': str(e)}, 500
 
-        @token_required
-        def delete(self, current_user):
+        def delete(self):
             try:
                 image_id = request.args.get('id')
                 image = Image.query.get(image_id)
@@ -60,8 +65,7 @@ class ImageAPI:
             except Exception as e:
                 return {'message': str(e)}, 500
 
-        @token_required
-        def get(self, current_user):
+        def get(self):
             try:
                 images = Image.query.all()
                 json_ready = [image.read() for image in images]
@@ -69,4 +73,4 @@ class ImageAPI:
             except Exception as e:
                 return {'message': str(e)}, 500
 
-    api.add_resource(_CRUD, '/')
+    api.add_resource(_CRUD, '/meme')
