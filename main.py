@@ -3,6 +3,7 @@ import threading
 # import "packages" from flask
 from flask import render_template,request  # import render_template from "public" flask libraries
 from flask.cli import AppGroup
+from auth_middleware import token_required
 
 
 # import "packages" from "this" project
@@ -12,9 +13,11 @@ from __init__ import app, db, cors  # Definitions initialization
 # setup APIs
 from api.user import user_api # Blueprint import api definition
 from api.player import player_api
+from api.meme import meme_api
 # database migrations
 from model.users import initUsers
 from model.players import initPlayers
+from model.memes import initImages
 
 # setup App pages
 from projects.projects import app_projects # Blueprint directory import projects definition
@@ -27,6 +30,7 @@ db.init_app(app)
 app.register_blueprint(user_api) # register api routes
 app.register_blueprint(player_api)
 app.register_blueprint(app_projects) # register app pages
+app.register_blueprint(meme_api)
 
 @app.errorhandler(404)  # catch for URL not found
 def page_not_found(e):
@@ -46,7 +50,7 @@ def table():
 def before_request():
     # Check if the request came from a specific origin
     allowed_origin = request.headers.get('Origin')
-    if allowed_origin in ['http://localhost:4200', 'http://127.0.0.1:4200', 'https://nighthawkcoders.github.io']:
+    if allowed_origin in ['http://localhost:4200', 'http://127.0.0.1:8082','http://localhost:8082', 'http://127.0.0.1:4200', 'https://nighthawkcoders.github.io']:
         cors._origins = allowed_origin
 
 # Create an AppGroup for custom commands
@@ -57,11 +61,11 @@ custom_cli = AppGroup('custom', help='Custom commands')
 def generate_data():
     initUsers()
     initPlayers()
+    initImages()
 
 # Register the custom command group with the Flask application
 app.cli.add_command(custom_cli)
         
 # this runs the application on the development server
 if __name__ == "__main__":
-    # change name for testing
-    app.run(debug=True, host="0.0.0.0", port="8086")
+    app.run(debug=True, host="0.0.0.0", port="8082")
