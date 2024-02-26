@@ -4,49 +4,69 @@ from datetime import datetime
 from auth_middleware import token_required
 from model.memes import Image  # Assuming Image is the SQLAlchemy model for storing images
 
-user_api = Blueprint('user_api', __name__, url_prefix='/api/users')
-api = Api(user_api)
+meme_api = Blueprint('meme_api', __name__, 
+                     url_prefix='/api/memes')
+
+api = Api(meme_api)
 
 class ImageAPI:        
     class _CRUD(Resource):
         @token_required
         def put(self, current_user):
-            body = request.get_json()
-            image_id = body.get('id')
-            filename = body.get('filename')
-            mimetype = body.get('mimetype')
-            image_data = body.get('image_data')
-            # Assuming you have a method like update() in your Image model
-            image = Image.query.filter_by(id=image_id).first()
-            if image:
-                image.update(filename, mimetype, image_data)
-                return jsonify(image.read())
-            else:
-                return {'message': 'Image not found'}, 404
+            try:
+                body = request.get_json()
+                image_id = body.get('id')
+                filename = body.get('filename')
+                mimetype = body.get('mimetype')
+                image_data = body.get('image_data')
+                if not all([image_id, filename, mimetype, image_data]):
+                    return {'message': 'Missing required fields'}, 400
+                image = Image.query.filter_by(id=image_id).first()
+                if image:
+                    image.update(filename, mimetype, image_data)
+                    return jsonify(image.read())
+                else:
+                    return {'message': 'Image not found'}, 404
+            except Exception as e:
+                return {'message': str(e)}, 500
 
         @token_required
         def delete(self, current_user):
-            image_id = request.args.get('id')
-            image = Image.query.get(image_id)
-            if image:
-                image.delete()
-                return jsonify({'message': 'Image deleted successfully'})
-            else:
-                return {'message': 'Image not found'}, 404
+            try:
+                image_id = request.args.get('id')
+                image = Image.query.get(image_id)
+                if image:
+                    image.delete()
+                    return jsonify({'message': 'Image deleted successfully'})
+                else:
+                    return {'message': 'Image not found'}, 404
+            except Exception as e:
+                return {'message': str(e)}, 500
 
         def post(self):
-            filename = request.files['file'].filename
-            mimetype = request.files['file'].mimetype
-            image_data = request.files['file'].read()
-            upload_date = datetime.now()
-            image = Image(filename=filename, mimetype=mimetype, image_data=image_data, upload_date=upload_date)
-            image.create()
-            return jsonify(image.read())
+            try:
+                if 'file' not in request.files:
+                    return {'message': 'No file part'}, 400
+                file = request.files['file']
+                if file.filename == '':
+                    return {'message': 'No selected file'}, 400
+                filename = file.filename
+                mimetype = file.mimetype
+                image_data = file.read()
+                upload_date = datetime.now()
+                image = Image(filename=filename, mimetype=mimetype, image_data=image_data, upload_date=upload_date)
+                image.create()
+                return jsonify(image.read())
+            except Exception as e:
+                return {'message': str(e)}, 500
 
         @token_required
         def get(self, current_user):
-            images = Image.query.all()
-            json_ready = [image.read() for image in images]
-            return jsonify(json_ready)
+            try:
+                images = Image.query.all()
+                json_ready = [image.read() for image in images]
+                return jsonify(json_ready)
+            except Exception as e:
+                return {'message': str(e)}, 500
 
     api.add_resource(_CRUD, '/')
