@@ -7,6 +7,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask import send_file
 import io
+import random
 
 app = Flask(__name__)
 CORS(app)  # Allow CORS for all routes
@@ -63,18 +64,19 @@ class ImageAPI:
                 upload_date = datetime.now()
                 image = Image(filename=filename, mimetype=mimetype, image_data=image_data, upload_date=upload_date)
                 image.create()
-                return jsonify(image.read())
+                return {'sucess': True}, 200
             except Exception as e:
                 return {'message': str(e)}, 500
 
-        def get(self, current_user):
+        def get(self):
             try:
                 images = Image.query.all()
+                imgID = random.randint(0,len(images))
                 # Assuming each image has a 'image_data' attribute which stores the image data
-                image_data = images[0].image_data  # Assuming you are only returning one image for simplicity
+                image_data = images[imgID].image_data  # Assuming you are only returning one image for simplicity
                 return send_file(io.BytesIO(image_data), mimetype='image/png')  # Adjust mimetype as needed
             except Exception as e:
                 return {'message': str(e)}, 500
 
 
-    api.add_resource(_CRUD, '/meme')
+    api.add_resource(_CRUD, '/')

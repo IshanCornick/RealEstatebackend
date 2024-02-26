@@ -22,6 +22,13 @@ class Image(db.Model):
         self.mimetype = mimetype
         self.image_data = image_data
 
+    def __init__(self, filename, mimetype, image_data, upload_date):
+        self.filename = filename
+        self.mimetype = mimetype
+        self.image_data = image_data
+        self.upload_date = upload_date
+ 
+
     def __repr__(self):
         return f"Image(id={self.id}, filename={self.filename}, mimetype={self.mimetype})"
 
