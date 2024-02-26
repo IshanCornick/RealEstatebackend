@@ -3,9 +3,8 @@ from flask import Blueprint, request, jsonify, current_app, Response
 from flask_restful import Api, Resource # used for REST API building
 from datetime import datetime
 from auth_middleware import token_required
-from sqlalchemy import desc
-from model.users import User
 
+from model.users import User
 
 user_api = Blueprint('user_api', __name__,
                    url_prefix='/api/users')
@@ -25,13 +24,14 @@ class UserAPI:
             score = body.get('score')
             diet = body.get('diet')
             workout = body.get('workout')
+            grade = body.get('grade')
             # dob=body.get('dob')
             users = User.query.all()
             for user in users:
                 if user.uid == uid:
-                    user.update(name,'',password, score, diet, workout)
+                    user.update(name,uid,password, score, diet, workout, grade)
             return f"{user.read()} Updated"
-        # jioj
+        
         @token_required
         def delete(self, current_user):
             # body = request.get_json()
@@ -46,6 +46,7 @@ class UserAPI:
         def post(self): # Create method
             ''' Read data for json body '''
             body = request.get_json()
+            
             
             ''' Avoid garbage in, error checking '''
             # validate name
@@ -88,9 +89,7 @@ class UserAPI:
         def get(self, current_user): # Read Method
             users = User.query.all()    # read/extract all users from database
             json_ready = [user.read() for user in users]  # prepare output in json
-            json_ready_sorted = sorted(json_ready, key=lambda x: x.get('score', 0), reverse=True)
-
-            return jsonify(json_ready_sorted)  # jsonify creates Flask response object, more specific to APIs than json.dumps
+            return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
         
     class _DietCRUD(Resource):  # Design CRUD
         @token_required
@@ -104,21 +103,28 @@ class UserAPI:
                     id = user.id
             diet = body.get("diet")
             workout = body.get("workout")
+            grade = body.get("grade")
             return f"Cannot locate design", 400
         @token_required
         def put(self, current_user):
             body = request.get_json() # get the body of the request
+            print("@@@@")
+            print(body)
+            print("@@@@")
             token = request.cookies.get("jwt")
             cur_user = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])['_uid']
             users = User.query.all()
             diet = body.get("diet")
             workout = body.get("workout")
+            grade = body.get("grade")
             for user in users:
                 if user.uid==cur_user: # modified with the and user.id==cur_user so random users can't delete other ppl
                     id = user.id
-                    user.update('','','','', workout, diet)
+                    print(workout,diet,grade)
+                    user.update('','','','', diet, workout, grade)
             diet = body.get("diet")
             workout = body.get("workout")
+            grade = body.get("grade")
         @token_required
         def delete(self, current_user):
             body = request.get_json() # get the body of the request
@@ -130,6 +136,8 @@ class UserAPI:
                     id = user.id
             diet = body.get("diet")
             workout = body.get("workout")
+            grade = body.get("grade")
+
         @token_required
         def patch(self, current_user):
             body = request.get_json() # get the body of the request
@@ -142,6 +150,9 @@ class UserAPI:
                     id = user.id
             diet = body.get("diet")
             workout = body.get("workout")
+            grade = body.get("grade")
+
+
     class _Security(Resource):
         def post(self):
             try:
@@ -204,4 +215,3 @@ class UserAPI:
     api.add_resource(_CRUD, '/')
     api.add_resource(_DietCRUD, '/diet')
     api.add_resource(_Security, '/authenticate')
-    
