@@ -57,12 +57,14 @@ def initImages():
             try:
                 filename = 'logo.png'
                 mimetype = 'image/png'
-                file_path = r"/mnt/c/Users/ntanu/.vscode/RealEstatebackend/volumes/uploads/ncs_logo.png"  # Use raw string literal or escape backslashes
+                file_path = r"./volumes/uploads/ncs_logo.png"  # Use raw string literal or escape backslashes
+                upload_date = datetime.now()
+
                 #file_path = os.getcwd()  # Use raw string literal or escape backslashes
                 print(os.getcwd())
                 with open(file_path, 'rb') as f:
                     image_data = f.read()
-                image = Image(filename=filename, mimetype=mimetype, image_data=image_data)
+                image = Image(filename=filename, mimetype=mimetype, image_data=image_data,upload_date=upload_date)
                 image.create()
             except IntegrityError:
                 db.session.remove()
