@@ -14,10 +14,14 @@ from __init__ import app, db, cors  # Definitions initialization
 from api.user import user_api # Blueprint import api definition
 from api.player import player_api
 from api.meme import meme_api
+from api.review import review_api
+from api.task import task_api
 # database migrations
+from model.tasks import initTasks
 from model.users import initUsers
 from model.players import initPlayers
 from model.memes import initImages
+from model.reviews import initReviews
 
 # setup App pages
 from projects.projects import app_projects # Blueprint directory import projects definition
@@ -31,6 +35,8 @@ app.register_blueprint(user_api) # register api routes
 app.register_blueprint(player_api)
 app.register_blueprint(app_projects) # register app pages
 app.register_blueprint(meme_api)
+app.register_blueprint(review_api)
+app.register_blueprint(task_api)
 
 @app.errorhandler(404)  # catch for URL not found
 def page_not_found(e):
@@ -62,6 +68,8 @@ def generate_data():
     initUsers()
     initPlayers()
     initImages()
+    initReviews()
+    initTasks()
 
 # Register the custom command group with the Flask application
 app.cli.add_command(custom_cli)
